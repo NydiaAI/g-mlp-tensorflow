@@ -2,7 +2,6 @@ from tensorflow.keras.layers import Layer, Dense
 from gmlp.activations.gelu import GELU
 from gmlp.sequential import SequentialLayer
 from gmlp.spatial_gating_unit import SpatialGatingUnit
-import tensorflow as tf
 
 class gMLPBlock(Layer):
     def __init__(self, 
@@ -22,7 +21,7 @@ class gMLPBlock(Layer):
     def build(self, input_shape):
         self.layers = SequentialLayer([
             SequentialLayer([
-                Dense(self.dim_ff, input_shape=input_shape),
+                Dense(self.dim_ff, input_shape=input_shape, activation="linear"),
                 GELU()
             ]),
             SpatialGatingUnit(

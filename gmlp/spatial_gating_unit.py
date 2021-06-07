@@ -23,9 +23,11 @@ class SpatialGatingUnit(Layer):
             name="sgu_conv1d_bias"
         )
 
+        # Finally was able to confirm the shape that the filter must have in tf.nn.conv1d (reversed order from pytorch)
+        # https://stackoverflow.com/questions/38114534/basic-1d-convolution-in-tensorflow
         self.conv1d_kernel = tf.Variable(
             tf.random.uniform(
-                shape=(self.dim_seq, self.dim_seq, 1),
+                shape=(1, self.dim_seq, self.dim_seq),
                 minval=-self.init_eps, 
                 maxval=self.init_eps
             ), 
@@ -40,14 +42,15 @@ class SpatialGatingUnit(Layer):
         if(self.causal):
             weight, bias = weight[:n, :n], bias[:n]
 
-            mask = tf.ones(weight.shape[:2])
+            mask = tf.ones(weight.shape[1:])
 
             # band_part and set_diag replace triu(1) in lucidrains' implementation
             mask = tf.linalg.band_part(mask, 0, -1)
-            mask = tf.linalg.set_diag(mask, tf.linalg.diag_part(mask) * 0.)
+            mask_diag = tf.linalg.diag_part(mask)
+            mask = tf.linalg.set_diag(mask, tf.zeros_like(mask_diag))
             
             mask = tf.cast(mask, dtype=tf.bool)
-            weight = tf.where(mask[..., None], 0., weight)
+            weight = tf.where(mask[None, ...], 0., weight)
 
 
         res, gate = tf.split(x, 2, axis=-1)

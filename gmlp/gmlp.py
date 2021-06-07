@@ -1,7 +1,7 @@
 from gmlp.pre_norm import PreNorm
 import tensorflow as tf
 
-from tensorflow.keras.layers import Layer, LayerNormalization
+from tensorflow.keras.layers import Layer
 
 from gmlp.sequential import SequentialLayer
 from gmlp.residual import Residual
