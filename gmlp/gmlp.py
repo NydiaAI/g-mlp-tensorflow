@@ -18,7 +18,7 @@ class gMLP(Layer):
                 dropout_ratio=0.2,
                 **kwargs):
         
-        self.dropout_ratio=dropout_ratio
+        self.dropout_ratio = dropout_ratio
         self.training = training
         self.activation = activation
         self.ff_mult = ff_mult

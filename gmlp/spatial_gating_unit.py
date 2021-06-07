@@ -40,7 +40,7 @@ class SpatialGatingUnit(Layer):
         n = x.shape[1]
         weight, bias = self.conv1d_kernel, self.conv1d_bias
         if(self.causal):
-            weight, bias = weight[:n, :n], bias[:n]
+            weight, bias = weight[:, :n, :n], bias[:n]
 
             mask = tf.ones(weight.shape[1:])
 
