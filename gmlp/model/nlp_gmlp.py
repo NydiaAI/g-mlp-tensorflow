@@ -24,7 +24,7 @@ class NLPgMLPModel(Model):
         self.to_logits = SequentialLayer([
             Flatten(data_format="channels_first"),
             LayerNormalization(),
-            Dense(1, activation="linear")
+            Dense(1, activation="tanh")
         ])
 
     def call(self, input, training=False):
