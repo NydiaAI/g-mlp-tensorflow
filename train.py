@@ -6,13 +6,16 @@ import tensorflow as tf
 import numpy as np
 import tensorflow.keras.datasets.imdb as imdb
 
-train_set, val_set = imdb.load_data()
+SEQ_LEN = 600
+BATCH_SIZE = 64
+
+train_data, val_data = imdb.load_data()
 
 model = NLPgMLPModel(
     depth=5, 
     embedding_dim=256, 
     num_tokens=88584, 
-    seq_length=2500,
+    seq_len=SEQ_LEN,
     ff_mult=4)
 
 model.compile(optimizer='adam', loss=BinaryCrossentropy(from_logits=False))
@@ -23,12 +26,27 @@ def gen(set):
             review = np.array(values[i], dtype="int32")
             label = np.array(labels[i], dtype="int32")
 
+            review_length = review.shape[0]
+            if(review_length < SEQ_LEN):
+                pad_length = SEQ_LEN - review_length
+                review = np.pad(review, (0, pad_length), constant_values=0.)
+            elif(review_length > SEQ_LEN):
+                review = review[:SEQ_LEN]
+
             yield (review, label)
 
     return iter
 
-ds_args = ((tf.int64, tf.int64), (tf.TensorShape([None]), tf.TensorShape([])))
-train_ds = Dataset.from_generator(gen(train_set), *ds_args)
-val_ds = Dataset.from_generator(gen(val_set), *ds_args)
+def make_dataset(s):
+    ds_args = ((tf.int64, tf.int64), (tf.TensorShape([SEQ_LEN]), tf.TensorShape([])))
+    ds = Dataset.from_generator(gen(s), *ds_args)
+    ds = ds.batch(BATCH_SIZE)
+    return ds
 
-model.fit(x=train_ds, validation_data=val_ds, epochs=10)
+train_ds = make_dataset(train_data)
+val_ds = make_dataset(val_data)
+
+model.fit(
+    x = train_ds, 
+    validation_data = val_ds,
+    epochs=10)

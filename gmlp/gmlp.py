@@ -10,7 +10,7 @@ from gmlp.gmlp_block import gMLPBlock
 class gMLP(Layer): 
     def __init__(self, 
                 depth,
-                seq_length,
+                seq_len,
                 ff_mult=4, 
                 causal=False,
                 activation=None,
@@ -20,7 +20,7 @@ class gMLP(Layer):
         self.dropout_ratio = dropout_ratio
         self.activation = activation
         self.ff_mult = ff_mult
-        self.seq_length = seq_length
+        self.seq_len = seq_len
         self.depth = depth
         self.causal = causal
 

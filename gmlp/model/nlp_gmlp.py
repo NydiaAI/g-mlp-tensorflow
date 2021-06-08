@@ -9,15 +9,15 @@ class NLPgMLPModel(Model):
         depth,
         embedding_dim,
         num_tokens,
-        seq_length,
+        seq_len,
         **kwargs):
         super(NLPgMLPModel, self).__init__()
 
-        self.to_embed = Embedding(num_tokens, embedding_dim, input_length=seq_length)
+        self.to_embed = Embedding(num_tokens, embedding_dim, input_length=seq_len)
 
         self.gmlp = gMLP(
             depth=depth, 
-            seq_length=seq_length,
+            seq_len=seq_len,
             activation=tf.nn.swish,
             **kwargs)
 
