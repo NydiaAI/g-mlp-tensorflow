@@ -2,6 +2,8 @@ from gmlp.model.nlp_gmlp import NLPgMLPModel
 from tensorflow.keras.losses import BinaryCrossentropy
 from tensorflow.data import Dataset
 
+from tensorflow.train import AdamOptimizer
+
 import tensorflow as tf
 import numpy as np
 import tensorflow.keras.datasets.imdb as imdb
@@ -18,7 +20,8 @@ model = NLPgMLPModel(
     seq_len=SEQ_LEN,
     ff_mult=4)
 
-model.compile(optimizer='adam', loss=BinaryCrossentropy(from_logits=False))
+model.compile(optimizer=AdamOptimizer(learning_rate=1e-4), loss=BinaryCrossentropy(from_logits=False))
+
 def gen(set):
     def iter():
         values, labels = set
