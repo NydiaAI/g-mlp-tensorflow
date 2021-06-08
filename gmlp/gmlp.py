@@ -12,14 +12,12 @@ class gMLP(Layer):
                 depth,
                 seq_length,
                 ff_mult=4, 
-                training=False,
                 causal=False,
                 activation=None,
                 dropout_ratio=0.2,
                 **kwargs):
         
         self.dropout_ratio = dropout_ratio
-        self.training = training
         self.activation = activation
         self.ff_mult = ff_mult
         self.seq_length = seq_length
@@ -45,5 +43,5 @@ class gMLP(Layer):
                 )
             ) for _ in range(self.depth) ])
         
-    def call(self, x):
+    def call(self, x, training=False):
         return self.layers(x)

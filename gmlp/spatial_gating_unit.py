@@ -9,7 +9,6 @@ class SpatialGatingUnit(Layer):
                 init_eps = 1e-3,
                 **kwargs):
         
-
         self.dim_seq = dim_seq
         self.causal = causal
         self.activation = activation
