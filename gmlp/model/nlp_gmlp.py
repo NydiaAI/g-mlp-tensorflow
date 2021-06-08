@@ -1,5 +1,5 @@
 import tensorflow as tf
-from tensorflow.keras import Model
+from tensorflow.keras import Model, Input
 from gmlp.gmlp import gMLP
 from gmlp.sequential import SequentialLayer
 from tensorflow.keras.layers import Embedding, LayerNormalization, Dense
@@ -27,6 +27,7 @@ class NLPgMLPModel(Model):
         ])
 
     def call(self, input, training=False):
+        x = tf.cast(input, dtype="int64")
         x = self.to_embed(input)
         x = self.gmlp(x)
         x = self.to_logits(x)
