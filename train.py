@@ -10,6 +10,7 @@ import tensorflow.keras.datasets.imdb as imdb
 
 SEQ_LEN = 768
 BATCH_SIZE = 4
+LEARNING_RATE = 1e-3
 
 train_data, val_data = imdb.load_data()
 
@@ -20,7 +21,7 @@ model = NLPgMLPModel(
     seq_len=SEQ_LEN,
     ff_mult=4)
 
-model.compile(optimizer=AdamOptimizer(learning_rate=1e-4), loss=BinaryCrossentropy(from_logits=False))
+model.compile(optimizer=AdamOptimizer(learning_rate=LEARNING_RATE), loss=BinaryCrossentropy(from_logits=False))
 
 def gen(set):
     def iter():

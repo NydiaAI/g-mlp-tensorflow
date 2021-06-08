@@ -32,4 +32,4 @@ class NLPgMLPModel(Model):
         x = self.to_embed(input)
         x = self.gmlp(x)
         x = self.to_logits(x)
-        return tf.math.sign(x)
+        return tf.nn.relu(tf.math.sign(x))
