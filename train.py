@@ -49,7 +49,12 @@ def make_dataset(s):
 train_ds = make_dataset(train_data)
 val_ds = make_dataset(val_data)
 
+train_steps = len(train_data[0])
+val_steps = len(val_data[0])
+
 model.fit(
     x = train_ds, 
     validation_data = val_ds,
-    epochs=10)
+    steps_per_epoch = train_steps,
+    validation_steps = val_steps
+)

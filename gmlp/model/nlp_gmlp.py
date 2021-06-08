@@ -2,7 +2,7 @@ import tensorflow as tf
 from tensorflow.keras import Model, Input
 from gmlp.gmlp import gMLP
 from gmlp.sequential import SequentialLayer
-from tensorflow.keras.layers import Embedding, LayerNormalization, Dense
+from tensorflow.keras.layers import Embedding, LayerNormalization, Dense, Flatten
 
 class NLPgMLPModel(Model):
     def __init__(self, 
@@ -22,6 +22,7 @@ class NLPgMLPModel(Model):
             **kwargs)
 
         self.to_logits = SequentialLayer([
+            Flatten(data_format="channels_first"),
             LayerNormalization(),
             Dense(1, activation="linear")
         ])
