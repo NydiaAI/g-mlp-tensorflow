@@ -17,8 +17,9 @@ train_data, val_data = imdb.load_data()
 model = NLPgMLPModel(
     depth=5, 
     embedding_dim=512, 
-    num_tokens=88584, 
+    num_tokens=88585, 
     seq_len=SEQ_LEN,
+    causal=True,
     ff_mult=4)
 
 model.compile(optimizer=AdamOptimizer(learning_rate=LEARNING_RATE), loss=BinaryCrossentropy(from_logits=False))

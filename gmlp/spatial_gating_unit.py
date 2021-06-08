@@ -49,7 +49,7 @@ class SpatialGatingUnit(Layer):
             mask = tf.linalg.set_diag(mask, tf.zeros_like(mask_diag))
             
             mask = tf.cast(mask, dtype=tf.bool)
-            weight = tf.where(mask[None, ...], 0., weight)
+            weight = tf.where(mask[None, ...], tf.zeros_like(weight), weight)
 
 
         res, gate = tf.split(x, 2, axis=-1)
