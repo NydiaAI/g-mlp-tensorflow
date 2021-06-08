@@ -12,6 +12,9 @@ SEQ_LEN = 768
 BATCH_SIZE = 4
 LEARNING_RATE = 1e-3
 
+gpu = tf.config.experimental.list_physical_devices('GPU')
+tf.config.experimental.set_memory_growth(gpu[0], True)
+
 train_data, val_data = imdb.load_data()
 
 model = NLPgMLPModel(
