@@ -10,4 +10,4 @@ class PreNorm(Layer):
         self.norm = LayerNormalization(input_shape=input_shape)
 
     def call(self, x):
-        self.fn(self.norm(x))
+        return self.fn(self.norm(x))

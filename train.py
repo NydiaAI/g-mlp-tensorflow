@@ -6,14 +6,14 @@ import tensorflow as tf
 import numpy as np
 import tensorflow.keras.datasets.imdb as imdb
 
-SEQ_LEN = 600
-BATCH_SIZE = 64
+SEQ_LEN = 768
+BATCH_SIZE = 4
 
 train_data, val_data = imdb.load_data()
 
 model = NLPgMLPModel(
     depth=5, 
-    embedding_dim=256, 
+    embedding_dim=512, 
     num_tokens=88584, 
     seq_len=SEQ_LEN,
     ff_mult=4)

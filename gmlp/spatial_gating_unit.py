@@ -57,11 +57,16 @@ class SpatialGatingUnit(Layer):
         conv1d_kwargs = {
             "stride": 1, 
             "use_cudnn_on_gpu": True, 
-            "data_format": "NWC",
+            "data_format": "NCW",
             "padding": "VALID"
         }
 
-        gate = tf.nn.conv1d(gate, filters=self.conv1d_kernel, **conv1d_kwargs) + self.conv1d_bias
+        gate = tf.nn.conv1d(gate, filters=self.conv1d_kernel, **conv1d_kwargs) 
+        
+        # Now add bias
+        t_axes = (0,2,1)
+        gate = tf.transpose((tf.transpose(gate, t_axes) + self.conv1d_bias), t_axes)
+        
         if(self.activation is not None):
             gate = self.activation(gate)
         return gate * res
