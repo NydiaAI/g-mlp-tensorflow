@@ -8,5 +8,5 @@ class GELU(Layer):
     
     def call(self, x):
         return (x/2.)*(1 + tf.math.tanh(
-            tf.math.sqrt(2./tf.constant(pi)) * (x + 0.44715*tf.math.pow(x, 3))
+            tf.math.sqrt(2./tf.constant(pi)) * (x + 0.044715*tf.math.pow(x, 3))
         ))
