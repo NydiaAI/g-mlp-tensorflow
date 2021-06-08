@@ -60,6 +60,6 @@ val_steps = len(val_data[0])
 model.fit(
     x = train_ds, 
     validation_data = val_ds,
-    steps_per_epoch = train_steps,
-    validation_steps = val_steps
+    steps_per_epoch = train_steps // BATCH_SIZE,
+    validation_steps = val_steps // BATCH_SIZE
 )
