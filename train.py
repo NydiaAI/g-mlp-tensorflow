@@ -10,7 +10,7 @@ import tensorflow.keras.datasets.imdb as imdb
 
 SEQ_LEN = 768
 BATCH_SIZE = 4
-EPOCHS = 5
+EPOCHS = 200
 LEARNING_RATE = 1e-3
 
 gpu = tf.config.experimental.list_physical_devices('GPU')
@@ -56,11 +56,13 @@ train_ds = make_dataset(train_data)
 val_ds = make_dataset(val_data)
 
 train_steps = len(train_data[0])
+total_batches = train_steps // BATCH_SIZE
+
 
 model.fit(
     x = train_ds, 
     validation_data = val_ds,
-    steps_per_epoch = train_steps // BATCH_SIZE,
-    validation_steps = 100,
+    steps_per_epoch = total_batches // EPOCHS,
+    validation_steps = 10,
     epochs=EPOCHS
 )
