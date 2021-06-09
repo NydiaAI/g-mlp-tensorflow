@@ -56,12 +56,11 @@ train_ds = make_dataset(train_data)
 val_ds = make_dataset(val_data)
 
 train_steps = len(train_data[0])
-val_steps = len(val_data[0])
 
 model.fit(
     x = train_ds, 
     validation_data = val_ds,
     steps_per_epoch = train_steps // BATCH_SIZE,
-    validation_steps = val_steps // BATCH_SIZE,
+    validation_steps = 100,
     epochs=EPOCHS
 )

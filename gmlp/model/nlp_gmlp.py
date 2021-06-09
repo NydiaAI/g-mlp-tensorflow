@@ -24,7 +24,7 @@ class NLPgMLPModel(Model):
         self.to_logits = SequentialLayer([
             Flatten(data_format="channels_first"),
             LayerNormalization(),
-            Dense(1, activation="tanh")
+            Dense(1, activation="sigmoid")
         ])
 
     def call(self, input, training=False):
@@ -32,4 +32,4 @@ class NLPgMLPModel(Model):
         x = self.to_embed(input)
         x = self.gmlp(x)
         x = self.to_logits(x)
-        return tf.nn.relu(tf.math.sign(x))
+        return x
