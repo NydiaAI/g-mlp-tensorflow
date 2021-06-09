@@ -1,4 +1,5 @@
 import tensorflow as tf
+from tensorflow.keras.initializers import RandomUniform
 from tensorflow.keras.layers import Layer, LayerNormalization
 
 class SpatialGatingUnit(Layer):
@@ -17,20 +18,13 @@ class SpatialGatingUnit(Layer):
         return super(SpatialGatingUnit, self).__init__(**kwargs)
 
     def build(self, _):
-        self.conv1d_bias = tf.Variable(
-            tf.ones(shape=[self.dim_seq]), 
-            name="sgu_conv1d_bias"
-        )
 
-        # Finally was able to confirm the shape that the filter must have in tf.nn.conv1d (reversed order from pytorch)
-        # https://stackoverflow.com/questions/38114534/basic-1d-convolution-in-tensorflow
-        self.conv1d_kernel = tf.Variable(
-            tf.random.uniform(
-                shape=(1, self.dim_seq, self.dim_seq),
-                minval=-self.init_eps, 
-                maxval=self.init_eps
-            ), 
-            name="sgu_conv1d_kernel"
+        self.conv1d_bias = self.add_weight(name="sgu_conv1d_bias", shape=[self.dim_seq], initializer=tf.ones)
+        
+        self.conv1d_kernel = self.add_weight(
+            name="sgu_conv1d_kernel", 
+            shape=(1, self.dim_seq, self.dim_seq), 
+            initializer=RandomUniform(minval=-self.init_eps, maxval=self.init_eps)
         )
 
         self.norm = LayerNormalization()
