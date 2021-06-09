@@ -1,36 +1,33 @@
-from tensorflow.keras.layers import Layer, Dense
+from tensorflow.keras.layers import Dense
+from tensorflow.keras import Sequential, Model
 from gmlp.activations.gelu import GELU
-from gmlp.sequential import SequentialLayer
 from gmlp.spatial_gating_unit import SpatialGatingUnit
 
-class gMLPBlock(Layer):
+class gMLPBlock(Model):
     def __init__(self, 
+                dim,
                 dim_ff,
                 seq_len,
                 causal=False,
                 activation=None,
                 **kwargs):
-        
-        self.activation = activation
-        self.dim_ff = dim_ff
-        self.seq_len = seq_len
-        self.causal = causal
+        super(gMLPBlock, self).__init__(**kwargs)    
 
-        return super(gMLPBlock, self).__init__(**kwargs)
-    
-    def build(self, input_shape):
-        self.layers = SequentialLayer([
-            SequentialLayer([
-                Dense(self.dim_ff, input_shape=input_shape, activation="linear"),
-                GELU()
-            ]),
-            SpatialGatingUnit(
-                self.seq_len, 
-                causal=self.causal, 
-                activation=self.activation
-            ),
-            Dense(input_shape[-1], activation="linear")
+        self.proj_in = Sequential([
+            Dense(dim_ff, activation="linear"),
+            GELU()
         ])
 
-    def call(self, x):
-        return self.layers(x)
+        self.sgu = SpatialGatingUnit(
+            seq_len, 
+            causal=causal, 
+            activation=activation
+        )
+
+        self.proj_out = Dense(dim, activation="linear")
+        
+    def call(self, x, training=False):
+        x = self.proj_in(x)
+        x = self.sgu(x)
+        x = self.proj_out(x)
+        return x

@@ -16,6 +16,7 @@ class NLPgMLPModel(Model):
         self.to_embed = Embedding(num_tokens, embedding_dim, input_length=seq_len)
 
         self.gmlp = gMLP(
+            dim=embedding_dim,
             depth=depth, 
             seq_len=seq_len,
             activation=tf.nn.swish,

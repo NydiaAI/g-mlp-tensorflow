@@ -1,14 +1,14 @@
 from gmlp.pre_norm import PreNorm
 import tensorflow as tf
 
-from tensorflow.keras.layers import Layer
+from tensorflow.keras import Sequential, Model
 
-from gmlp.sequential import SequentialLayer
 from gmlp.residual import Residual
 from gmlp.gmlp_block import gMLPBlock
 
-class gMLP(Layer): 
-    def __init__(self, 
+class gMLP(Model): 
+    def __init__(self,
+                dim, 
                 depth,
                 seq_len,
                 ff_mult=4, 
@@ -17,31 +17,22 @@ class gMLP(Layer):
                 dropout_ratio=0.2,
                 **kwargs):
         
-        self.dropout_ratio = dropout_ratio
-        self.activation = activation
-        self.ff_mult = ff_mult
-        self.seq_len = seq_len
-        self.depth = depth
-        self.causal = causal
+        super(gMLP, self).__init__(**kwargs)
 
-        return super(gMLP, self).__init__(**kwargs)
-    
-    def build(self, input_shape):
-        dim = input_shape[-1]
+        dim_ff = dim * ff_mult
 
-        dim_ff = dim * self.ff_mult
-
-        self.layers = SequentialLayer([
+        self.residual_layers = Sequential([
             Residual(
                 PreNorm(
                     gMLPBlock(
+                        dim=dim,
                         dim_ff=dim_ff, 
-                        seq_len=self.seq_len, 
-                        causal=self.causal, 
-                        activation= self.activation
+                        seq_len=seq_len, 
+                        causal=causal, 
+                        activation= activation
                     )
                 )
-            ) for _ in range(self.depth) ])
+            ) for _ in range(depth) ])
         
     def call(self, x, training=False):
-        return self.layers(x)
+        return self.residual_layers(x)
