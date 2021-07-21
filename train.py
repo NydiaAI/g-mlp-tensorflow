@@ -13,8 +13,9 @@ BATCH_SIZE = 4
 EPOCHS = 200
 LEARNING_RATE = 1e-3
 
-gpu = tf.config.experimental.list_physical_devices('GPU')
-tf.config.experimental.set_memory_growth(gpu[0], True)
+config = tf.ConfigProto()
+config.gpu_options.allow_growth = True
+tf.keras.backend.set_session(tf.Session(config=config))
 
 train_data, val_data = imdb.load_data()
 
