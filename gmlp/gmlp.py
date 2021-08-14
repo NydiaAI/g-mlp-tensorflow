@@ -16,6 +16,14 @@ class gMLP(Model):
                 activation=None,
                 dropout_ratio=0.2,
                 **kwargs):
+
+        reg_keys = ['bias_regularizer', 'kernel_regularizer'] 
+
+        for k in reg_keys:
+            if(k not in kwargs):
+                kwargs[k] = None
+
+        regularization_kwargs = { k: kwargs.pop(k) for k in reg_keys}  
         
         super(gMLP, self).__init__(**kwargs)
 
@@ -29,7 +37,8 @@ class gMLP(Model):
                         dim_ff=dim_ff, 
                         seq_len=seq_len, 
                         causal=causal, 
-                        activation= activation
+                        activation=activation,
+                        **regularization_kwargs
                     )
                 )
             ) for _ in range(depth) ])

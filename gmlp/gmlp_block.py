@@ -10,21 +10,29 @@ class gMLPBlock(Model):
                 seq_len,
                 causal=False,
                 activation=None,
+                kernel_regularizer=None,
+                bias_regularizer=None,
                 **kwargs):
-        super(gMLPBlock, self).__init__(**kwargs)    
+        super(gMLPBlock, self).__init__(**kwargs)
+
+        reg_kwargs = {
+            'kernel_regularizer': kernel_regularizer,
+            'bias_regularizer': bias_regularizer
+        }
 
         self.proj_in = Sequential([
-            Dense(dim_ff, activation="linear"),
+            Dense(dim_ff, activation="linear", **reg_kwargs),
             GELU()
         ])
 
         self.sgu = SpatialGatingUnit(
             seq_len, 
             causal=causal, 
-            activation=activation
+            activation=activation,
+            **reg_kwargs
         )
 
-        self.proj_out = Dense(dim, activation="linear")
+        self.proj_out = Dense(dim, activation="linear", **reg_kwargs)
         
     def call(self, x, training=False):
         x = self.proj_in(x)

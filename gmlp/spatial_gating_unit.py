@@ -8,21 +8,31 @@ class SpatialGatingUnit(Layer):
                 causal = False, 
                 activation = None, 
                 init_eps = 1e-3,
-                **kwargs):
+                kernel_regularizer=None,
+                bias_regularizer=None):
         
         self.dim_seq = dim_seq
         self.causal = causal
         self.activation = activation
         self.init_eps = init_eps / dim_seq
 
-        return super(SpatialGatingUnit, self).__init__(**kwargs)
+        self.kernel_regularizer = kernel_regularizer
+        self.bias_regularizer = bias_regularizer
+
+        return super(SpatialGatingUnit, self).__init__()
 
     def build(self, _):
 
-        self.conv1d_bias = self.add_weight(name="sgu_conv1d_bias", shape=[self.dim_seq], initializer=tf.ones)
+        self.conv1d_bias = self.add_weight(
+            name="sgu_conv1d_bias", 
+            regularizer=self.bias_regularizer,
+            shape=[self.dim_seq], 
+            initializer=tf.ones
+        )
         
         self.conv1d_kernel = self.add_weight(
             name="sgu_conv1d_kernel", 
+            regularizer=self.kernel_regularizer,
             shape=(1, self.dim_seq, self.dim_seq), 
             initializer=RandomUniform(minval=-self.init_eps, maxval=self.init_eps)
         )
