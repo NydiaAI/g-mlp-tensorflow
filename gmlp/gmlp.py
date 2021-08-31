@@ -1,5 +1,6 @@
 from gmlp.pre_norm import PreNorm
 import tensorflow as tf
+from tensorflow.keras.layers import Dropout
 
 from tensorflow.keras import Sequential, Model
 
@@ -29,19 +30,27 @@ class gMLP(Model):
 
         dim_ff = dim * ff_mult
 
-        self.residual_layers = Sequential([
-            Residual(
-                PreNorm(
-                    gMLPBlock(
-                        dim=dim,
-                        dim_ff=dim_ff, 
-                        seq_len=seq_len, 
-                        causal=causal, 
-                        activation=activation,
-                        **regularization_kwargs
+
+        layers = []
+        for _ in range(depth):
+            layers.append(
+                Residual(
+                    PreNorm(
+                        gMLPBlock(
+                            dim=dim,
+                            dim_ff=dim_ff, 
+                            seq_len=seq_len, 
+                            causal=causal, 
+                            activation=activation,
+                            **regularization_kwargs
+                        )
                     )
                 )
-            ) for _ in range(depth) ])
+            )
+            layers.append(Dropout(dropout_ratio))
+                
+
+        self.residual_layers = Sequential(layers)
         
     def call(self, x, training=False):
-        return self.residual_layers(x)
+        return self.residual_layers(x, training=training)
